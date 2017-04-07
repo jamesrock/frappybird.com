@@ -1,8 +1,8 @@
 (function() {
 
-	var	
+	var
 	deflate = function(n) {
-		
+
 		return ROCK.MATH.roundTo(n/scale, 1);
 
 	},
@@ -21,7 +21,7 @@
 
 	},
 	moveBest = function() {
-		
+
 		bestTens.x = (bestHundreds.x + bestHundreds.width + 1);
 		bestUnits.x = (bestTens.x + bestTens.width + 1);
 
@@ -64,7 +64,7 @@
 			scoreHundreds.x -= 18;
 		};
 
-		if(STATE===STATES.GAME_OVER) {
+		if(STATE===STATES.GAME_OVER||STATE===STATES.SCORE) {
 			scoreHundreds.x = ((scoreBoard.x+scoreBoard.width) - 34);
 			scoreHundreds.y = 87;
 		};
@@ -169,7 +169,7 @@
 				getReady.visible = true;
 				tap.visible = true;
 				hit.visible = true;
-				
+
 				bird.bird.x = 45;
 				bird.bird.y = 100;
 
@@ -193,55 +193,87 @@
 				playPauseButton.visible = false;
 
 				gameOver.visible = true;
-				scoreBoard.visible = true;
 				okButton.visible = true;
 				shareButton.visible = true;
 
-				if(score>=10) {
-					
-					medal.visible = true;
+				showScoreBoard();
 
-				};
+			break;
+			case STATES.SCORE:
 
-				if(score>=40) {
-					
-					medal.frame = 3;
+				hit.visible = false;
+				playPauseButton.visible = false;
+				startButton.visible = false;
+				scoreButton.visible = false;
+				gameOver.visible = false;
 
-				}
-				else if(score>=30) {
+				okButton.visible = true;
+				shareButton.visible = true;
 
-					medal.frame = 2;
-
-				}
-				else if(score>=20) {
-
-					medal.frame = 1;
-
-				}
-				else if(score>=10) {
-
-					medal.frame = 0;
-
-				};
-
-				updateScore();
-
-				if(score>best) {
-
-					best = score;
-					storage.set("best", best);
-					newBest.visible = true;
-
-				};
-
-				updateBest();
+				showScoreBoard();
 
 			break;
 		};
 
 	},
+	updateMedal = function() {
+
+		var
+		target = score;
+
+		if(STATE===STATES.SCORE) {
+			target = best;
+		};
+
+		if(target>=10) {
+
+			medal.visible = true;
+
+		};
+
+		if(target>=40) {
+
+			medal.frame = 3;
+
+		}
+		else if(target>=30) {
+
+			medal.frame = 2;
+
+		}
+		else if(target>=20) {
+
+			medal.frame = 1;
+
+		}
+		else if(target>=10) {
+
+			medal.frame = 0;
+
+		};
+
+	},
+	showScoreBoard = function() {
+
+		scoreBoard.visible = true;
+
+		updateMedal();
+
+		updateScore();
+
+		if(score>best) {
+
+			best = score;
+			storage.set("best", best);
+			newBest.visible = true;
+
+		};
+
+		updateBest();
+
+	},
 	createNumberSprite = function() {
-		
+
 		return new Sprite(texture, [[157, 245], [165, 245], [173, 245], [181, 245], [189, 245], [197, 245], [205, 245], [213, 245], [221, 245], [229, 245]], 7, 10, 10, 15);
 
 	},
@@ -319,7 +351,7 @@
 					touchY;
 
 					if(isTouch) {
-						
+
 						touch = e.changedTouches[0];
 						touchX = touch.clientX-touch.target.offsetLeft;
 						touchY = touch.clientY-touch.target.offsetTop;
@@ -363,14 +395,14 @@
 	}),
 	Sprite = DisplayObject.extend({
 		constructor: function Sprite(texture, frames, width, height, x, y) {
-		
+
 			this.texture = texture;
 			this.x = x;
 			this.y = y;
 			this.width = width;
 			this.height = height;
 			this.frames = frames;
-			
+
 		},
 		render: function(renderer) {
 
@@ -400,19 +432,19 @@
 			else {
 				this.frame = 0;
 			};
-			
+
 		},
 		frame: 0
 	}),
 	Fill = DisplayObject.extend({
 		constructor: function Sprite(fill, width, height, x, y) {
-		
+
 			this.fill = fill;
 			this.x = x;
 			this.y = y;
 			this.width = width;
 			this.height = height;
-			
+
 		},
 		render: function(renderer) {
 
@@ -439,12 +471,12 @@
 	}),
 	Circle = DisplayObject.extend({
 		constructor: function Sprite(fill, radius, x, y) {
-		
+
 			this.fill = fill;
 			this.x = x;
 			this.y = y;
 			this.radius = radius;
-			
+
 		},
 		render: function(renderer) {
 
@@ -539,7 +571,7 @@
 			_this = this;
 
 			this.frame = requestAnimationFrame(function() {
-				
+
 				_this.start();
 
 			});
@@ -608,7 +640,7 @@
 
 		},
 		update: function() {
-			
+
 			this.updateVelocity();
 			this.updateRotation();
 			this.checkCollision();
@@ -689,9 +721,9 @@
 			if(this.dead) {
 
 				// sounds.hit.play();
-				
+
 				if(STATE!==STATES.GAME_OVER) {
-					
+
 					updateState(STATES.GAME_OVER);
 
 				};
@@ -717,9 +749,9 @@
 			this.bird.rotation = 0;
 
 		},
-		MAX_VELOCITY: 15,
 		FLAPIMPULSE: -4,
 		GRAVITY: 0.25,
+		MAX_VELOCITY: 15,
 		MAX_UP_ANGLE: -20,
 		MAX_DOWN_ANGLE: 90,
 		velocity: 0,
@@ -736,7 +768,7 @@
 			pipeBottom;
 
 			for(var i=0;i<this.COUNT;i++) {
-				
+
 				pipeTop = new Sprite(texture, [[293, 0]], 26, 182, 0, 0);
 				pipeBottom = new Sprite(texture, [[319, 0]], 26, 182, 0, 0);
 
@@ -849,7 +881,7 @@
 			floor;
 
 			for(var i=0;i<this.COUNT;i++) {
-				
+
 				floor = new Sprite(texture, [[139, 0]], 154, 56, floorx, 200);
 
 				this.floors.push(floor);
@@ -900,7 +932,7 @@
 			background;
 
 			for(var i=0;i<this.COUNT;i++) {
-				
+
 				background = new Sprite(texture, [[0, 0]], 138, 256, backgroundx, 0);
 
 				this.backgrounds.push(background);
@@ -1005,7 +1037,7 @@
 	backgrounds.addTo(splash);
 
 	splash.add(title);
-	
+
 	splash.add(getReady);
 	splash.add(tap);
 
@@ -1072,45 +1104,48 @@
 
 	hit.bind(touchStartEvent, function(e, x, y) {
 
+		console.log("hit:down");
+
 		if(STATE!==STATES.PLAY) {
 			updateState(STATES.PLAY);
 		};
-
-		// console.log("hit:down");
 
 		bird.flap();
 
 	}).bind(touchEndEvent, function() {
 
-		// console.log("hit:up");
+		console.log("hit:up");
 
 	});
 
 	okButton.bind(touchStartEvent, function() {
 
+		console.log("okButton:down");
+
 		okButton.y += 1;
-		// console.log("okButton:down");
 
 	}).bind(touchEndEvent, function() {
+
+		console.log("okButton:up");
 
 		this.y -= 1;
 		setTimeout(function() {
 			updateState(STATES.SPLASH);
 		}, 20);
-		
-		// console.log("okButton:up");
 
 	});
 
 	shareButton.bind(touchStartEvent, function() {
 
+		console.log("shareButton:down");
+
 		this.y += 1;
 
 	}).bind(touchEndEvent, function() {
 
+		console.log("shareButton:up");
+
 		this.y -= 1;
-		
-		// console.log("shareButton:up");
 
 		var
 		url = shareURL;
@@ -1118,46 +1153,55 @@
 		url += encodeURIComponent("I scored " + score + " on Frappy Bird! frappybird.com");
 
 		setTimeout(function() {
-			
 			location = url;
-
 		}, 300);
-		
+
 	});
 
 	startButton.bind(touchStartEvent, function() {
 
+		console.log("startButton:down");
+
 		this.y += 1;
 
 	}).bind(touchEndEvent, function() {
+
+		console.log("startButton:up");
 
 		this.y -= 1;
 		setTimeout(function() {
 			updateState(STATES.GET_READY);
 		}, 20);
-		
-		// console.log("startButton:up");
-		
+
 	});
 
 	scoreButton.bind(touchStartEvent, function() {
+
+		console.log("scoreButton:down");
 
 		this.y += 1;
 
 	}).bind(touchEndEvent, function() {
 
+		console.log("scoreButton:up");
+
 		this.y -= 1;
 
-		// updateState(STATES.SCORE);
-		// console.log("scoreButton:up");
+		setTimeout(function() {
+			updateState(STATES.SCORE);
+		}, 20);
 
 	});
 
 	playPauseButton.bind(touchStartEvent, function() {
 
+		console.log("playPauseButton:down");
+
 		this.y += 1;
 
 	}).bind(touchEndEvent, function() {
+
+		console.log("playPauseButton:up");
 
 		this.y -= 1;
 
@@ -1173,7 +1217,8 @@
 	});
 
 	best = (storage.get("best")||0);
+	// best = 47;
 
 	renderer.appendTo(document.body);
-	
+
 })();
