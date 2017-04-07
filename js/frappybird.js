@@ -205,7 +205,6 @@
 				playPauseButton.visible = false;
 				startButton.visible = false;
 				scoreButton.visible = false;
-				gameOver.visible = false;
 
 				okButton.visible = true;
 				shareButton.visible = true;
@@ -312,6 +311,7 @@
 	deflateHeight = deflate(height),
 	score = 0,
 	best = 0,
+	clickDelay = 30,
 	storage = new ROCK.LocalStorage("frappybird"),
 	STATES = {
 		SPLASH: 1,
@@ -461,11 +461,6 @@
 			renderer.context.restore();
 
 			this.renderer = renderer;
-
-		},
-		flash: function() {
-
-			this.opacity = 1;
 
 		}
 	}),
@@ -975,8 +970,6 @@
 	scoreBoard = new Sprite(texture, [[139, 57]], 113, 58, 24, 70),
 	tap = new Sprite(texture, [[139, 120]], 40, 50, 65, 110),
 	hit = new Fill("red", deflateWidth, deflateHeight-50, 0, 50),
-	blackFill = new Fill("black", deflateWidth, deflateHeight, 0, 0),
-	whiteFill = new Fill("white", deflateWidth, deflateHeight, 0, 0),
 	floorFill = new Fill("#DBDA96", deflateWidth, deflateHeight, 0, 250),
 	floorHit = new Fill("red", deflateWidth, 50, 0, 200),
 	backgrounds = new Backgrounds(),
@@ -1002,9 +995,6 @@
 	hit.opacity = 0;
 
 	floorHit.opacity = 0;
-
-	whiteFill.opacity = 0.5;
-	blackFill.opacity = 0.5;
 
 	getReady.x = ROCK.MATH.truncate((deflateWidth/2)-(getReady.width/2));
 
@@ -1072,8 +1062,6 @@
 	splash.add(hit);
 
 	splash.add(playPauseButton);
-	// splash.add(blackFill);
-	// splash.add(whiteFill);
 
 	updateState(STATES.SPLASH);
 
@@ -1104,7 +1092,7 @@
 
 	hit.bind(touchStartEvent, function(e, x, y) {
 
-		console.log("hit:down");
+		// console.log("hit:down");
 
 		if(STATE!==STATES.PLAY) {
 			updateState(STATES.PLAY);
@@ -1114,36 +1102,36 @@
 
 	}).bind(touchEndEvent, function() {
 
-		console.log("hit:up");
+		// console.log("hit:up");
 
 	});
 
 	okButton.bind(touchStartEvent, function() {
 
-		console.log("okButton:down");
+		// console.log("okButton:down");
 
 		okButton.y += 1;
 
 	}).bind(touchEndEvent, function() {
 
-		console.log("okButton:up");
+		// console.log("okButton:up");
 
 		this.y -= 1;
 		setTimeout(function() {
 			updateState(STATES.SPLASH);
-		}, 20);
+		}, clickDelay);
 
 	});
 
 	shareButton.bind(touchStartEvent, function() {
 
-		console.log("shareButton:down");
+		// console.log("shareButton:down");
 
 		this.y += 1;
 
 	}).bind(touchEndEvent, function() {
 
-		console.log("shareButton:up");
+		// console.log("shareButton:up");
 
 		this.y -= 1;
 
@@ -1154,54 +1142,54 @@
 
 		setTimeout(function() {
 			location = url;
-		}, 300);
+		}, clickDelay);
 
 	});
 
 	startButton.bind(touchStartEvent, function() {
 
-		console.log("startButton:down");
+		// console.log("startButton:down");
 
 		this.y += 1;
 
 	}).bind(touchEndEvent, function() {
 
-		console.log("startButton:up");
+		// console.log("startButton:up");
 
 		this.y -= 1;
 		setTimeout(function() {
 			updateState(STATES.GET_READY);
-		}, 20);
+		}, clickDelay);
 
 	});
 
 	scoreButton.bind(touchStartEvent, function() {
 
-		console.log("scoreButton:down");
+		// console.log("scoreButton:down");
 
 		this.y += 1;
 
 	}).bind(touchEndEvent, function() {
 
-		console.log("scoreButton:up");
+		// console.log("scoreButton:up");
 
 		this.y -= 1;
 
 		setTimeout(function() {
 			updateState(STATES.SCORE);
-		}, 20);
+		}, clickDelay);
 
 	});
 
 	playPauseButton.bind(touchStartEvent, function() {
 
-		console.log("playPauseButton:down");
+		// console.log("playPauseButton:down");
 
 		this.y += 1;
 
 	}).bind(touchEndEvent, function() {
 
-		console.log("playPauseButton:up");
+		// console.log("playPauseButton:up");
 
 		this.y -= 1;
 
