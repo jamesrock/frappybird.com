@@ -311,7 +311,6 @@
 	deflateHeight = deflate(height),
 	score = 0,
 	best = 0,
-	clickDelay = 30,
 	storage = new ROCK.LocalStorage("frappybird"),
 	STATES = {
 		SPLASH: 1,
@@ -338,12 +337,10 @@
 			var
 			sprite = this;
 
-			console.log("bind()", this.name, event);
-
 			if(this.scene.renderer) {
 
 				var
-				handler = function(e) {
+				handlerProxy = function(e) {
 
 					if(!sprite.visible) {
 						return;
@@ -369,8 +366,6 @@
 
 					};
 
-					// console.log(sprite, touchX, touchY);
-
 					if(new Circle("red", 6, deflate(touchX), deflate(touchY)).hitTest(sprite)) {
 
 						handler.call(sprite, e, touchX, touchY);
@@ -381,24 +376,32 @@
 
 				};
 
-				this.scene.renderer.node.addEventListener(event, handler);
+				this.scene.renderer.node.addEventListener(event, handlerProxy);
 
 				events[this.name] = events[this.name]||[];
 				events[this.name].push({
 					type: event,
-					handler: handler
+					handler: handler,
+					handlerProxy: handlerProxy
 				});
 
 			};
 
-			console.log(events);
-
 			return this;
 
 		},
-		unbind: function() {
+		unbind: function(event, handler) {
 
-			// stub
+			console.log('unbind()', events[this.name]);
+
+			var
+			obj = events[this.name].filter(function(e) {
+				return e.type===event&&e.handler===handler;
+			})[0];
+
+			events[this.name].splice(events[this.name].indexOf(obj), 1);
+
+			this.scene.renderer.node.removeEventListener(event, obj.handlerProxy);
 
 		},
 		move: function(prop, value) {
@@ -1011,6 +1014,150 @@
 		wing: createAudio("wing"),
 		die: createAudio("die"),
 		hit: createAudio("hit")
+	},
+	hitTouchStartHandler = function() {
+
+		console.log("hit:down");
+
+		if(state!==STATES.PLAY) {
+			updateState(STATES.PLAY);
+		};
+
+		bird.flap();
+
+		// this.unbind(touchStartEvent, hitTouchStartHandler);
+		// this.bind(touchEndEvent, hitTouchEndHandler);
+
+	},
+	hitTouchEndHandler = function() {
+
+		console.log("hit:up");
+
+		this.bind(touchStartEvent, hitTouchStartHandler);
+		this.unbind(touchEndEvent, hitTouchEndHandler);
+
+	},
+	okButtonTouchStartHandler = function() {
+
+		console.log("okButton:down");
+
+		okButton.y += 1;
+
+		this.unbind(touchStartEvent, okButtonTouchStartHandler);
+		this.bind(touchEndEvent, okButtonTouchEndHandler);
+
+	},
+	okButtonTouchEndHandler = function() {
+
+		console.log("okButton:up");
+
+		this.y -= 1;
+
+		updateState(STATES.SPLASH);
+
+		this.bind(touchStartEvent, okButtonTouchStartHandler);
+		this.unbind(touchEndEvent, okButtonTouchEndHandler);
+
+	},
+	shareButtonTouchStartHandler = function() {
+
+		console.log("shareButton:down");
+
+		this.y += 1;
+
+		this.unbind(touchStartEvent, shareButtonTouchStartHandler);
+		this.bind(touchEndEvent, shareButtonTouchEndHandler);
+
+	},
+	shareButtonTouchEndHandler = function() {
+
+		console.log("shareButton:up");
+
+		this.y -= 1;
+
+		var
+		url = shareURL;
+
+		url += encodeURIComponent("I scored " + score + " on Frappy Bird! frappybird.com");
+
+		location = url;
+
+		this.bind(touchStartEvent, shareButtonTouchStartHandler);
+		this.unbind(touchEndEvent, shareButtonTouchEndHandler);
+
+	},
+	startButtonTouchStartHandler = function() {
+
+		console.log("startButton:down");
+
+		this.y += 1;
+
+		this.unbind(touchStartEvent, startButtonTouchStartHandler);
+		this.bind(touchEndEvent, startButtonTouchEndHandler);
+
+	},
+	startButtonTouchEndHandler = function() {
+
+		console.log("startButton:up");
+
+		this.y -= 1;
+
+		updateState(STATES.GET_READY);
+
+		this.bind(touchStartEvent, startButtonTouchStartHandler);
+		this.unbind(touchEndEvent, startButtonTouchEndHandler);
+
+	},
+	scoreButtonTouchStartHandler = function() {
+
+		console.log("scoreButton:down");
+
+		this.y += 1;
+
+		this.unbind(touchStartEvent, scoreButtonTouchStartHandler);
+		this.bind(touchEndEvent, scoreButtonTouchEndHandler);
+
+	},
+	scoreButtonTouchEndHandler = function() {
+
+		console.log("scoreButton:up");
+
+		this.y -= 1;
+
+		updateState(STATES.SCORE);
+
+		this.bind(touchStartEvent, scoreButtonTouchStartHandler);
+		this.unbind(touchEndEvent, scoreButtonTouchEndHandler);
+
+	},
+	playPauseButtonTouchStartHandler = function() {
+
+		console.log("playPauseButton:down");
+
+		this.y += 1;
+
+		this.unbind(touchStartEvent, playPauseButtonTouchStartHandler);
+		this.bind(touchEndEvent, playPauseButtonTouchEndHandler);
+
+	},
+	playPauseButtonTouchEndHandler = function() {
+
+		console.log("playPauseButton:up");
+
+		this.y -= 1;
+
+		if(this.frame===0) {
+			this.frame = 1;
+		}
+		else {
+			this.frame = 0;
+		};
+
+		renderer.pause();
+
+		this.bind(touchStartEvent, playPauseButtonTouchStartHandler);
+		this.unbind(touchEndEvent, playPauseButtonTouchEndHandler);
+
 	};
 
 	if(!isTouch) {
@@ -1118,119 +1265,17 @@
 
 	renderer.start();
 
-	hit.bind(touchStartEvent, function() {
+	hit.bind(touchStartEvent, hitTouchStartHandler);
 
-		// console.log("hit:down");
+	okButton.bind(touchStartEvent, okButtonTouchStartHandler);
 
-		if(state!==STATES.PLAY) {
-			updateState(STATES.PLAY);
-		};
+	shareButton.bind(touchStartEvent, shareButtonTouchStartHandler);
 
-		bird.flap();
+	startButton.bind(touchStartEvent, startButtonTouchStartHandler);
 
-	}).bind(touchEndEvent, function() {
+	scoreButton.bind(touchStartEvent, scoreButtonTouchStartHandler);
 
-		// console.log("hit:up");
-
-	});
-
-	okButton.bind(touchStartEvent, function() {
-
-		console.log("okButton:down");
-
-		okButton.y += 1;
-
-	}).bind(touchEndEvent, function() {
-
-		console.log("okButton:up");
-
-		this.y -= 1;
-		// setTimeout(function() {
-			updateState(STATES.SPLASH);
-		// }, clickDelay);
-
-	});
-
-	shareButton.bind(touchStartEvent, function() {
-
-		// console.log("shareButton:down");
-
-		this.y += 1;
-
-	}).bind(touchEndEvent, function() {
-
-		// console.log("shareButton:up");
-
-		this.y -= 1;
-
-		var
-		url = shareURL;
-
-		url += encodeURIComponent("I scored " + score + " on Frappy Bird! frappybird.com");
-
-		setTimeout(function() {
-			location = url;
-		}, clickDelay);
-
-	});
-
-	startButton.bind(touchStartEvent, function() {
-
-		console.log("startButton:down");
-
-		this.y += 1;
-
-	}).bind(touchEndEvent, function() {
-
-		console.log("startButton:up");
-
-		this.y -= 1;
-		setTimeout(function() {
-			updateState(STATES.GET_READY);
-		}, clickDelay);
-
-	});
-
-	scoreButton.bind(touchStartEvent, function() {
-
-		// console.log("scoreButton:down");
-
-		this.y += 1;
-
-	}).bind(touchEndEvent, function() {
-
-		// console.log("scoreButton:up");
-
-		this.y -= 1;
-
-		setTimeout(function() {
-			updateState(STATES.SCORE);
-		}, clickDelay);
-
-	});
-
-	playPauseButton.bind(touchStartEvent, function() {
-
-		// console.log("playPauseButton:down");
-
-		this.y += 1;
-
-	}).bind(touchEndEvent, function() {
-
-		// console.log("playPauseButton:up");
-
-		this.y -= 1;
-
-		if(this.frame===0) {
-			this.frame = 1;
-		}
-		else {
-			this.frame = 0;
-		};
-
-		renderer.pause();
-
-	});
+	playPauseButton.bind(touchStartEvent, playPauseButtonTouchStartHandler);
 
 	best = (storage.get("best")||0);
 	// best = 47;
