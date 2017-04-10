@@ -64,7 +64,7 @@
 			scoreHundreds.x -= 18;
 		};
 
-		if(STATE===STATES.GAME_OVER||STATE===STATES.SCORE) {
+		if(state===STATES.GAME_OVER||state===STATES.SCORE) {
 			scoreHundreds.x = ((scoreBoard.x+scoreBoard.width) - 34);
 			scoreHundreds.y = 87;
 		};
@@ -113,13 +113,11 @@
 		moveBest();
 
 	},
-	updateState = function(state) {
+	updateState = function(gameState) {
 
-		// console.log("updateState");
+		state = gameState;
 
-		STATE = state;
-
-		switch(STATE) {
+		switch(state) {
 			case STATES.SPLASH:
 
 				bird.reset();
@@ -220,8 +218,10 @@
 		var
 		target = score;
 
-		if(STATE===STATES.SCORE) {
+		if(state===STATES.SCORE) {
+
 			target = best;
+
 		};
 
 		if(target>=10) {
@@ -273,7 +273,7 @@
 	},
 	createNumberSprite = function() {
 
-		return new Sprite(texture, [[157, 245], [165, 245], [173, 245], [181, 245], [189, 245], [197, 245], [205, 245], [213, 245], [221, 245], [229, 245]], 7, 10, 10, 15);
+		return new Sprite("number", texture, [[157, 245], [165, 245], [173, 245], [181, 245], [189, 245], [197, 245], [205, 245], [213, 245], [221, 245], [229, 245]], 7, 10, 10, 15);
 
 	},
 	createAudio = function(name) {
@@ -320,7 +320,8 @@
 		GAME_OVER: 4,
 		SCORE: 5
 	},
-	STATE,
+	state,
+	events = {},
 	DisplayObject = ROCK.Object.extend({
 		x: 0,
 		y: 0,
@@ -337,9 +338,12 @@
 			var
 			sprite = this;
 
+			console.log("bind()", this.name, event);
+
 			if(this.scene.renderer) {
 
-				this.scene.renderer.node.addEventListener(event, function(e) {
+				var
+				handler = function(e) {
 
 					if(!sprite.visible) {
 						return;
@@ -355,6 +359,7 @@
 						touch = e.changedTouches[0];
 						touchX = touch.clientX-touch.target.offsetLeft;
 						touchY = touch.clientY-touch.target.offsetTop;
+
 					}
 					else {
 
@@ -366,7 +371,7 @@
 
 					// console.log(sprite, touchX, touchY);
 
-					if(new Circle("blue", 6, deflate(touchX), deflate(touchY)).hitTest(sprite)) {
+					if(new Circle("red", 6, deflate(touchX), deflate(touchY)).hitTest(sprite)) {
 
 						handler.call(sprite, e, touchX, touchY);
 
@@ -374,9 +379,19 @@
 
 					e.preventDefault();
 
+				};
+
+				this.scene.renderer.node.addEventListener(event, handler);
+
+				events[this.name] = events[this.name]||[];
+				events[this.name].push({
+					type: event,
+					handler: handler
 				});
 
 			};
+
+			console.log(events);
 
 			return this;
 
@@ -394,8 +409,9 @@
 		}
 	}),
 	Sprite = DisplayObject.extend({
-		constructor: function Sprite(texture, frames, width, height, x, y) {
+		constructor: function Sprite(name, texture, frames, width, height, x, y) {
 
+			this.name = name;
 			this.texture = texture;
 			this.x = x;
 			this.y = y;
@@ -437,8 +453,9 @@
 		frame: 0
 	}),
 	Fill = DisplayObject.extend({
-		constructor: function Sprite(fill, width, height, x, y) {
+		constructor: function Sprite(name, fill, width, height, x, y) {
 
+			this.name = name;
 			this.fill = fill;
 			this.x = x;
 			this.y = y;
@@ -625,8 +642,8 @@
 			frame1 = [258, 70],
 			frame2 = [258, 83];
 
-			this.bird = new Sprite(texture, [frame0, frame0, frame0, frame1, frame1, frame1, frame2, frame2, frame2, frame1, frame1, frame1], 17, 12, 10, 100);
-			this.hit = new Circle("blue", 6, 0, 0);
+			this.bird = new Sprite("bird", texture, [frame0, frame0, frame0, frame1, frame1, frame1, frame2, frame2, frame2, frame1, frame1, frame1], 17, 12, 10, 100);
+			this.hit = new Circle("red", 6, 0, 0);
 
 			this.hit.opacity = 0;
 
@@ -647,7 +664,7 @@
 				return;
 			};
 
-			this.velocity = this.FLAPIMPULSE;
+			this.velocity = this.FLAP_IMPULSE;
 
 			// sounds.wing.play();
 
@@ -699,6 +716,12 @@
 			pipeTop = pipe[0],
 			pipeBottom = pipe[1];
 
+			if(this.hit.y<0&&(this.hit.x+this.hit.radius/2)>=pipeTop.x) {
+
+				this.dead = true;
+
+			}
+
 			if(!this.dead&&(this.hit.hitTest(pipeTop)||this.hit.hitTest(pipeBottom))) {
 
 				this.dead = true;
@@ -717,7 +740,7 @@
 
 				// sounds.hit.play();
 
-				if(STATE!==STATES.GAME_OVER) {
+				if(state!==STATES.GAME_OVER) {
 
 					updateState(STATES.GAME_OVER);
 
@@ -744,7 +767,13 @@
 			this.bird.rotation = 0;
 
 		},
-		FLAPIMPULSE: -4,
+		addTo: function(scene) {
+
+			scene.add(this.bird);
+			scene.add(this.hit);
+
+		},
+		FLAP_IMPULSE: -4,
 		GRAVITY: 0.25,
 		MAX_VELOCITY: 15,
 		MAX_UP_ANGLE: -20,
@@ -764,8 +793,8 @@
 
 			for(var i=0;i<this.COUNT;i++) {
 
-				pipeTop = new Sprite(texture, [[293, 0]], 26, 182, 0, 0);
-				pipeBottom = new Sprite(texture, [[319, 0]], 26, 182, 0, 0);
+				pipeTop = new Sprite("pipeTop", texture, [[293, 0]], 26, 182, 0, 0);
+				pipeBottom = new Sprite("pipeBottom", texture, [[319, 0]], 26, 182, 0, 0);
 
 				this.pipes.push([pipeTop, pipeBottom]);
 
@@ -877,7 +906,7 @@
 
 			for(var i=0;i<this.COUNT;i++) {
 
-				floor = new Sprite(texture, [[139, 0]], 154, 56, floorx, 200);
+				floor = new Sprite("floor", texture, [[139, 0]], 154, 56, floorx, 200);
 
 				this.floors.push(floor);
 
@@ -928,7 +957,7 @@
 
 			for(var i=0;i<this.COUNT;i++) {
 
-				background = new Sprite(texture, [[0, 0]], 138, 256, backgroundx, 0);
+				background = new Sprite("background", texture, [[0, 0]], 138, 256, backgroundx, 0);
 
 				this.backgrounds.push(background);
 
@@ -950,28 +979,28 @@
 	}),
 	texture = new Texture("spritesheet.png?v=" + version),
 	renderer = new Renderer(width, height, scale),
-	splash = new Scene(),
-	medal = new Sprite(texture, [[189, 120], [212, 120], [189, 143], [212, 143]], 22, 22, 70, 10),
+	game = new Scene(),
+	medal = new Sprite("medal", texture, [[189, 120], [212, 120], [189, 143], [212, 143]], 22, 22, 70, 10),
 	scoreHundreds = createNumberSprite(),
 	scoreTens = createNumberSprite(),
 	scoreUnits = createNumberSprite(),
 	bestHundreds = createNumberSprite(),
 	bestTens = createNumberSprite(),
 	bestUnits = createNumberSprite(),
-	title = new Sprite(texture, [[139, 173]], 96, 22, 30, 20),
-	gameOver = new Sprite(texture, [[139, 199]], 94, 19, 30, 40),
-	getReady = new Sprite(texture, [[139, 221]], 87, 22, 30, 50),
-	playPauseButton = new Sprite(texture, [[280, 57], [280, 72]], 13, 14, 10, 15),
-	startButton = new Sprite(texture, [[246, 199]], 40, 14, 30, 170),
-	scoreButton = new Sprite(texture, [[246, 169]], 40, 14, 90, 170),
-	newBest = new Sprite(texture, [[139, 245]], 16, 7, 90, 170),
-	okButton = new Sprite(texture, [[246, 139]], 40, 14, 30, 170),
-	shareButton = new Sprite(texture, [[246, 184]], 40, 14, 90, 170),
-	scoreBoard = new Sprite(texture, [[139, 57]], 113, 58, 24, 70),
-	tap = new Sprite(texture, [[139, 120]], 40, 50, 65, 110),
-	hit = new Fill("red", deflateWidth, deflateHeight-50, 0, 50),
-	floorFill = new Fill("#DBDA96", deflateWidth, deflateHeight, 0, 250),
-	floorHit = new Fill("red", deflateWidth, 50, 0, 200),
+	title = new Sprite("title", texture, [[139, 173]], 96, 22, 30, 20),
+	gameOver = new Sprite("gameOver", texture, [[139, 199]], 94, 19, 30, 40),
+	getReady = new Sprite("getReady", texture, [[139, 221]], 87, 22, 30, 50),
+	playPauseButton = new Sprite("playPauseButton", texture, [[280, 57], [280, 72]], 13, 14, 10, 15),
+	startButton = new Sprite("startButton", texture, [[246, 199]], 40, 14, 30, 170),
+	scoreButton = new Sprite("scoreButton", texture, [[246, 169]], 40, 14, 90, 170),
+	newBest = new Sprite("newBest", texture, [[139, 245]], 16, 7, 90, 170),
+	okButton = new Sprite("okButton", texture, [[246, 139]], 40, 14, 30, 170),
+	shareButton = new Sprite("shareButton", texture, [[246, 184]], 40, 14, 90, 170),
+	scoreBoard = new Sprite("scoreBoard", texture, [[139, 57]], 113, 58, 24, 70),
+	tap = new Sprite("tap", texture, [[139, 120]], 40, 50, 65, 110),
+	hit = new Fill("hit", "red", deflateWidth, deflateHeight-50, 0, 50),
+	floorFill = new Fill("floorFill", "#DBDA96", deflateWidth, deflateHeight, 0, 250),
+	floorHit = new Fill("floorHit", "red", deflateWidth, 50, 0, 200),
 	backgrounds = new Backgrounds(),
 	bird = new Bird(),
 	pipes = new Pipes(),
@@ -1024,52 +1053,51 @@
 	okButton.x = ROCK.MATH.truncate((deflateWidth/2)-(okButton.width)-10);
 	shareButton.x = ROCK.MATH.truncate((deflateWidth/2)+10);
 
-	backgrounds.addTo(splash);
+	backgrounds.addTo(game);
 
-	splash.add(title);
+	game.add(title);
 
-	splash.add(getReady);
-	splash.add(tap);
+	game.add(getReady);
+	game.add(tap);
 
-	pipes.addTo(splash);
+	pipes.addTo(game);
 
-	splash.add(bird.bird);
-	splash.add(bird.hit);
+	bird.addTo(game);
 
-	splash.add(gameOver);
-	splash.add(scoreBoard);
-	splash.add(newBest);
+	game.add(gameOver);
+	game.add(scoreBoard);
+	game.add(newBest);
 
-	splash.add(scoreHundreds);
-	splash.add(scoreTens);
-	splash.add(scoreUnits);
+	game.add(scoreHundreds);
+	game.add(scoreTens);
+	game.add(scoreUnits);
 
-	splash.add(bestHundreds);
-	splash.add(bestTens);
-	splash.add(bestUnits);
+	game.add(bestHundreds);
+	game.add(bestTens);
+	game.add(bestUnits);
 
-	splash.add(medal);
+	game.add(medal);
 
-	splash.add(okButton);
-	splash.add(shareButton);
-	splash.add(scoreButton);
-	splash.add(startButton);
+	game.add(okButton);
+	game.add(shareButton);
+	game.add(scoreButton);
+	game.add(startButton);
 
-	floors.addTo(splash);
-	splash.add(floorFill);
-	splash.add(floorHit);
+	floors.addTo(game);
+	game.add(floorFill);
+	game.add(floorHit);
 
-	splash.add(hit);
+	game.add(hit);
 
-	splash.add(playPauseButton);
+	game.add(playPauseButton);
 
 	updateState(STATES.SPLASH);
 
-	renderer.setScene(splash);
+	renderer.setScene(game);
 
 	renderer.onFrameChange = function() {
 
-		switch(STATE) {
+		switch(state) {
 			case STATES.SPLASH:
 			case STATES.GET_READY:
 				floors.update();
@@ -1090,11 +1118,11 @@
 
 	renderer.start();
 
-	hit.bind(touchStartEvent, function(e, x, y) {
+	hit.bind(touchStartEvent, function() {
 
 		// console.log("hit:down");
 
-		if(STATE!==STATES.PLAY) {
+		if(state!==STATES.PLAY) {
 			updateState(STATES.PLAY);
 		};
 
@@ -1108,18 +1136,18 @@
 
 	okButton.bind(touchStartEvent, function() {
 
-		// console.log("okButton:down");
+		console.log("okButton:down");
 
 		okButton.y += 1;
 
 	}).bind(touchEndEvent, function() {
 
-		// console.log("okButton:up");
+		console.log("okButton:up");
 
 		this.y -= 1;
-		setTimeout(function() {
+		// setTimeout(function() {
 			updateState(STATES.SPLASH);
-		}, clickDelay);
+		// }, clickDelay);
 
 	});
 
@@ -1148,13 +1176,13 @@
 
 	startButton.bind(touchStartEvent, function() {
 
-		// console.log("startButton:down");
+		console.log("startButton:down");
 
 		this.y += 1;
 
 	}).bind(touchEndEvent, function() {
 
-		// console.log("startButton:up");
+		console.log("startButton:up");
 
 		this.y -= 1;
 		setTimeout(function() {
