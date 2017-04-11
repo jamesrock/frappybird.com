@@ -3,7 +3,7 @@
 	var
 	deflate = function(n) {
 
-		return ROCK.MATH.roundTo(n/scale, 1);
+		return ROCK.MATH.roundTo(n/(scale/multiplier), 1);
 
 	},
 	getRandom = function() {
@@ -284,22 +284,22 @@
 	getScale = function() {
 
 		var
-		val = 2;
+		val = 4;
 
 		if(height>=1000) {
 
-			val = 4;
+			val = val*2;
 
 		};
 
 		return val;
 
 	},
+	multiplier = 2,
 	version = "1.0",
 	isTouch = ("ontouchstart" in window),
 	touchStartEvent = "touchstart",
 	touchEndEvent = "touchend",
-	touchMoveEvent = "touchmove",
 	shareURL = "https://twitter.com/intent/tweet?text=",
 	ratio = 3/2,
 	width = innerWidth,
@@ -309,6 +309,8 @@
 	scale = getScale(),
 	deflateWidth = deflate(width),
 	deflateHeight = deflate(height),
+	// center = deflateWidth/2,
+	center = ROCK.MATH.truncate((width/2)/(scale/2)),
 	score = 0,
 	best = 0,
 	storage = new ROCK.LocalStorage("frappybird"),
@@ -392,7 +394,7 @@
 		},
 		unbind: function(event, handler) {
 
-			console.log('unbind()', events[this.name]);
+			// console.log('unbind()', events[this.name]);
 
 			var
 			obj = events[this.name].filter(function(e) {
@@ -542,7 +544,10 @@
 
 			this.width = width;
 			this.height = height;
-			this.scale = scale*2;
+			// this.scale = scale*2;
+			this.scale = scale;
+
+			console.log('new Renderer()', this, arguments);
 
 			this.node = document.createElement("canvas");
 			this.context = this.node.getContext(this.type);
@@ -594,7 +599,9 @@
 			this.render();
 
 			if(this.paused) {
+
 				return this;
+
 			};
 
 			this.onFrameChange.call(this);
@@ -625,6 +632,7 @@
 		height: 500,
 		scene: null,
 		scale: 1,
+		deflate: 2,
 		frame: 0,
 		paused: false
 	}),
@@ -664,7 +672,9 @@
 		flap: function() {
 
 			if(this.dead) {
+
 				return;
+
 			};
 
 			this.velocity = this.FLAP_IMPULSE;
@@ -675,13 +685,17 @@
 		updateVelocity: function() {
 
 			if(this.floored) {
+
 				return;
+
 			};
 
 			this.velocity += this.GRAVITY;
 
 			if(this.velocity > this.MAX_VELOCITY) {
+
 				this.velocity = this.MAX_VELOCITY;
+
 			};
 
 			this.bird.y += this.velocity;
@@ -1164,7 +1178,6 @@
 
 		touchStartEvent = "mousedown";
 		touchEndEvent = "mouseup";
-		touchMoveEvent = "mousemove";
 
 	};
 
@@ -1172,19 +1185,24 @@
 
 	floorHit.opacity = 0;
 
-	getReady.x = ROCK.MATH.truncate((deflateWidth/2)-(getReady.width/2));
+	getReady.x = center;
+	getReady.x -= getReady.width/2;
 
-	gameOver.x = ROCK.MATH.truncate((deflateWidth/2)-(gameOver.width/2));
+	gameOver.x = center;
+	gameOver.x -= gameOver.width/2;
 
-	tap.x = ROCK.MATH.truncate((deflateWidth/2)-(tap.width/2));
+	tap.x = center;
+	tap.x -= tap.width/2;
 	tap.x += 10;
 
-	scoreBoard.x = ROCK.MATH.truncate((deflateWidth/2)-(scoreBoard.width/2));
+	scoreBoard.x = center;
+	scoreBoard.x -= scoreBoard.width/2;
 
 	medal.x = (scoreBoard.x + 13);
 	medal.y = (scoreBoard.y + 21);
 
-	title.x = ROCK.MATH.truncate((deflateWidth/2)-(title.width/2));
+	title.x = center;
+	title.x -= title.width/2;
 	title.x -= 10;
 	title.y = 70;
 
@@ -1194,11 +1212,22 @@
 	newBest.x = ((bestHundreds.x-newBest.width)-2);
 	newBest.y = 108;
 
-	startButton.x = ROCK.MATH.truncate((deflateWidth/2)-(startButton.width)-10);
-	scoreButton.x = ROCK.MATH.truncate((deflateWidth/2)+10);
+	startButton.x = center;
+	startButton.x -= startButton.width;
+	startButton.x -= 10;
 
-	okButton.x = ROCK.MATH.truncate((deflateWidth/2)-(okButton.width)-10);
-	shareButton.x = ROCK.MATH.truncate((deflateWidth/2)+10);
+	// startButton.x = width/2-10;
+	console.log('startButton.x', startButton.x);
+
+	scoreButton.x = center;
+	scoreButton.x += 10;
+
+	okButton.x = center;
+	okButton.x -= okButton.width;
+	okButton.x -= 10;
+
+	shareButton.x = center;
+	shareButton.x += 10;
 
 	backgrounds.addTo(game);
 
@@ -1279,6 +1308,9 @@
 
 	best = (storage.get("best")||0);
 	// best = 47;
+
+	console.log('center', center);
+	console.log('deflateWidth', deflateWidth);
 
 	renderer.appendTo(document.body);
 
