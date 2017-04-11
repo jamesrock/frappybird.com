@@ -3,7 +3,7 @@
 	var
 	deflate = function(n) {
 
-		return ROCK.MATH.roundTo(n/(scale/multiplier), 1);
+		return ROCK.MATH.roundTo(n/(scale/2), 1);
 
 	},
 	getRandom = function() {
@@ -37,7 +37,7 @@
 		tens = 0,
 		units = 0;
 
-		scoreHundreds.x = ROCK.MATH.truncate(deflateWidth/2);
+		scoreHundreds.x = center;
 
 		if(score>99) {
 			hundreds = Number(split[0]);
@@ -295,7 +295,6 @@
 		return val;
 
 	},
-	multiplier = 2,
 	version = "1.0",
 	isTouch = ("ontouchstart" in window),
 	touchStartEvent = "touchstart",
@@ -309,8 +308,7 @@
 	scale = getScale(),
 	deflateWidth = deflate(width),
 	deflateHeight = deflate(height),
-	// center = deflateWidth/2,
-	center = ROCK.MATH.truncate((width/2)/(scale/2)),
+	center = deflateWidth/2,
 	score = 0,
 	best = 0,
 	storage = new ROCK.LocalStorage("frappybird"),
@@ -544,10 +542,9 @@
 
 			this.width = width;
 			this.height = height;
-			// this.scale = scale*2;
 			this.scale = scale;
 
-			console.log('new Renderer()', this, arguments);
+			// console.log('new Renderer()', this, arguments);
 
 			this.node = document.createElement("canvas");
 			this.context = this.node.getContext(this.type);
@@ -632,7 +629,6 @@
 		height: 500,
 		scene: null,
 		scale: 1,
-		deflate: 2,
 		frame: 0,
 		paused: false
 	}),
@@ -1031,7 +1027,7 @@
 	},
 	hitTouchStartHandler = function() {
 
-		console.log("hit:down");
+		// console.log("hit:down");
 
 		if(state!==STATES.PLAY) {
 			updateState(STATES.PLAY);
@@ -1045,7 +1041,7 @@
 	},
 	hitTouchEndHandler = function() {
 
-		console.log("hit:up");
+		// console.log("hit:up");
 
 		this.bind(touchStartEvent, hitTouchStartHandler);
 		this.unbind(touchEndEvent, hitTouchEndHandler);
@@ -1053,7 +1049,7 @@
 	},
 	okButtonTouchStartHandler = function() {
 
-		console.log("okButton:down");
+		// console.log("okButton:down");
 
 		okButton.y += 1;
 
@@ -1063,7 +1059,7 @@
 	},
 	okButtonTouchEndHandler = function() {
 
-		console.log("okButton:up");
+		// console.log("okButton:up");
 
 		this.y -= 1;
 
@@ -1075,7 +1071,7 @@
 	},
 	shareButtonTouchStartHandler = function() {
 
-		console.log("shareButton:down");
+		// console.log("shareButton:down");
 
 		this.y += 1;
 
@@ -1085,7 +1081,7 @@
 	},
 	shareButtonTouchEndHandler = function() {
 
-		console.log("shareButton:up");
+		// console.log("shareButton:up");
 
 		this.y -= 1;
 
@@ -1102,7 +1098,7 @@
 	},
 	startButtonTouchStartHandler = function() {
 
-		console.log("startButton:down");
+		// console.log("startButton:down");
 
 		this.y += 1;
 
@@ -1112,7 +1108,7 @@
 	},
 	startButtonTouchEndHandler = function() {
 
-		console.log("startButton:up");
+		// console.log("startButton:up");
 
 		this.y -= 1;
 
@@ -1124,7 +1120,7 @@
 	},
 	scoreButtonTouchStartHandler = function() {
 
-		console.log("scoreButton:down");
+		// console.log("scoreButton:down");
 
 		this.y += 1;
 
@@ -1134,7 +1130,7 @@
 	},
 	scoreButtonTouchEndHandler = function() {
 
-		console.log("scoreButton:up");
+		// console.log("scoreButton:up");
 
 		this.y -= 1;
 
@@ -1146,7 +1142,7 @@
 	},
 	playPauseButtonTouchStartHandler = function() {
 
-		console.log("playPauseButton:down");
+		// console.log("playPauseButton:down");
 
 		this.y += 1;
 
@@ -1156,7 +1152,7 @@
 	},
 	playPauseButtonTouchEndHandler = function() {
 
-		console.log("playPauseButton:up");
+		// console.log("playPauseButton:up");
 
 		this.y -= 1;
 
@@ -1215,9 +1211,6 @@
 	startButton.x = center;
 	startButton.x -= startButton.width;
 	startButton.x -= 10;
-
-	// startButton.x = width/2-10;
-	console.log('startButton.x', startButton.x);
 
 	scoreButton.x = center;
 	scoreButton.x += 10;
@@ -1308,9 +1301,6 @@
 
 	best = (storage.get("best")||0);
 	// best = 47;
-
-	console.log('center', center);
-	console.log('deflateWidth', deflateWidth);
 
 	renderer.appendTo(document.body);
 
