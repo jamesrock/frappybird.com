@@ -1086,14 +1086,19 @@
 		this.y -= 1;
 
 		var
-		url = shareURL;
+		url = shareURL,
+		message = "I scored " + score + " on Frappy Bird! frappybird.com";
 
-		url += encodeURIComponent("I scored " + score + " on Frappy Bird! frappybird.com");
+		if(state===STATE.SCORE) {
+			message = "My best score on Frappy Bird is " + score + "! frappybird.com";
+		};
 
-		location = url;
+		url += encodeURIComponent(message);
 
 		this.bind(touchStartEvent, shareButtonTouchStartHandler);
 		this.unbind(touchEndEvent, shareButtonTouchEndHandler);
+
+		location = url;
 
 	},
 	startButtonTouchStartHandler = function() {
