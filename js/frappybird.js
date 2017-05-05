@@ -664,6 +664,8 @@
 			this.updateRotation();
 			this.checkCollision();
 
+			return this;
+
 		},
 		flap: function() {
 
@@ -676,6 +678,8 @@
 			this.velocity = this.FLAP_IMPULSE;
 
 			// sounds.wing.play();
+
+			return this;
 
 		},
 		updateVelocity: function() {
@@ -697,10 +701,12 @@
 			this.bird.y += this.velocity;
 			this.hit.y += this.velocity;
 
+			return this;
+
 		},
 		updateRotation: function() {
 
-			if(this.velocity>0) {
+			if(this.velocity > 0) {
 
 				this.bird.rotation += this.velocity;
 
@@ -716,6 +722,19 @@
 				this.bird.rotation = this.MAX_DOWN_ANGLE;
 
 			};
+
+			return this;
+
+		},
+		updateWings: function() {
+
+			if(this.bird.rotation <= 0) {
+
+				this.bird.nextFrame();
+
+			};
+
+			return this;
 
 		},
 		checkCollision: function() {
@@ -1089,7 +1108,7 @@
 		url = shareURL,
 		message = "I scored " + score + " on Frappy Bird! frappybird.com";
 
-		if(state===STATE.SCORE) {
+		if(state===STATES.SCORE) {
 			message = "My best score on Frappy Bird is " + score + "! frappybird.com";
 		};
 
@@ -1275,12 +1294,12 @@
 			case STATES.SPLASH:
 			case STATES.GET_READY:
 				floors.update();
-				bird.bird.nextFrame();
+				bird.updateWings();
 			break;
 			case STATES.PLAY:
 				floors.update();
 				bird.update();
-				bird.bird.nextFrame();
+				bird.updateWings();
 				pipes.update();
 			break;
 			case STATES.GAME_OVER:
