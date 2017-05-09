@@ -1109,7 +1109,7 @@
 		message = "I scored " + score + " on Frappy Bird! frappybird.com";
 
 		if(state===STATES.SCORE) {
-			message = "My best score on Frappy Bird is " + score + "! frappybird.com";
+			message = "My best score on Frappy Bird is " + best + "! frappybird.com";
 		};
 
 		url += encodeURIComponent(message);
