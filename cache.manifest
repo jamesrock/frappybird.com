@@ -1,0 +1,21 @@
+CACHE MANIFEST
+# Cache manifest version 1.0.0
+
+js/frappybird.js
+css/frappybird.css
+audio/die.mp3
+audio/hit.mp3
+audio/point.mp3
+audio/swoosh.mp3
+audio/wing.mp3
+spritesheet.png
+index.html
+
+NETWORK:
+# All URLs that start with the following lines
+# are whitelisted.
+
+CACHE:
+# Additional items to cache.
+
+FALLBACK:
