@@ -1328,4 +1328,15 @@
 
 	renderer.appendTo(document.body);
 
+	if('serviceWorker' in navigator) {
+		navigator.serviceWorker.register('/js/worker.js').then(function(reg) {
+			console.log('Registration succeeded. Scope is ' + reg.scope);
+		}).catch(function(error) {
+			console.log('Registration failed with ' + error);
+		});
+	}
+	else {
+		console.log('no serviceWorker');
+	};
+
 })();
