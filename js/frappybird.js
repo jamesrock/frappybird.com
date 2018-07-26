@@ -281,6 +281,15 @@
 		return new Audio("/audio/" + name + ".mp3");
 
 	},
+	playSound = function(sound) {
+
+		if(!playSounds) {
+			return;
+		};
+
+		sounds[sound].play();
+
+	},
 	getScale = function() {
 
 		var
@@ -295,7 +304,7 @@
 		return val;
 
 	},
-	version = "1.0",
+	version = "2.0",
 	isTouch = ("ontouchstart" in window),
 	touchStartEvent = "touchstart",
 	touchEndEvent = "touchend",
@@ -304,11 +313,11 @@
 	width = innerWidth,
 	height = innerHeight,
 	maxWidth = ROCK.MATH.truncate(height/ratio),
-	width = width>maxWidth?maxWidth:width,
+	width = (width>maxWidth?maxWidth:width),
 	scale = getScale(),
 	deflateWidth = deflate(width),
 	deflateHeight = deflate(height),
-	center = deflateWidth/2,
+	center = (deflateWidth/2),
 	score = 0,
 	best = 0,
 	storage = new ROCK.LocalStorage("frappybird"),
@@ -677,7 +686,7 @@
 
 			this.velocity = this.FLAP_IMPULSE;
 
-			// sounds.wing.play();
+			playAudio('wing');
 
 			return this;
 
@@ -770,7 +779,7 @@
 
 			if(this.dead) {
 
-				// sounds.hit.play();
+				playSound('hit');
 
 				if(state!==STATES.GAME_OVER) {
 
@@ -785,7 +794,7 @@
 			if(this.bird.x===(pipeTop.x+pipeTop.width)) {
 
 				score ++;
-				// sounds.point.play();
+				playSound('point');
 				updateScore();
 
 			};
@@ -1044,6 +1053,7 @@
 		die: createAudio("die"),
 		hit: createAudio("hit")
 	},
+	playSounds = true,
 	hitTouchStartHandler = function() {
 
 		// console.log("hit:down");
