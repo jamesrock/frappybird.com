@@ -679,14 +679,12 @@
 		flap: function() {
 
 			if(this.dead) {
-
 				return;
-
 			};
 
 			this.velocity = this.FLAP_IMPULSE;
 
-			playAudio('wing');
+			playSound('wing');
 
 			return this;
 
