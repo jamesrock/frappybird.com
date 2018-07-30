@@ -32,7 +32,7 @@
 	updateScore = function() {
 
 		var
-		split = score.toString().split(""),
+		split = score.toString().split(''),
 		hundreds = 0,
 		tens = 0,
 		units = 0;
@@ -79,7 +79,7 @@
 	updateBest = function() {
 
 		var
-		split = best.toString().split(""),
+		split = best.toString().split(''),
 		hundreds = 0,
 		tens = 0,
 		units = 0;
@@ -263,7 +263,7 @@
 		if(score>best) {
 
 			best = score;
-			storage.set("best", best);
+			storage.set('best', best);
 			newBest.visible = true;
 
 		};
@@ -273,12 +273,12 @@
 	},
 	createNumberSprite = function() {
 
-		return new Sprite("number", texture, [[157, 245], [165, 245], [173, 245], [181, 245], [189, 245], [197, 245], [205, 245], [213, 245], [221, 245], [229, 245]], 7, 10, 10, 15);
+		return new Sprite('number', texture, [[157, 245], [165, 245], [173, 245], [181, 245], [189, 245], [197, 245], [205, 245], [213, 245], [221, 245], [229, 245]], 7, 10, 10, 15);
 
 	},
 	createAudio = function(name) {
 
-		return new Audio("/audio/" + name + ".mp3");
+		return new Audio(`/audio/${name}.mp3`);
 
 	},
 	playSound = function(sound) {
@@ -304,23 +304,23 @@
 		return val;
 
 	},
-	version = "2.0",
-	isTouch = ("ontouchstart" in window),
-	touchStartEvent = "touchstart",
-	touchEndEvent = "touchend",
-	shareURL = "https://twitter.com/intent/tweet?text=",
-	ratio = 3/2,
+	version = '2.0',
+	isTouch = ('ontouchstart' in window),
+	touchStartEvent = 'touchstart',
+	touchEndEvent = 'touchend',
+	shareURL = 'https://twitter.com/intent/tweet?text=',
+	ratio = (4/3),
 	width = innerWidth,
 	height = innerHeight,
 	maxWidth = ROCK.MATH.truncate(height/ratio),
 	width = (width>maxWidth?maxWidth:width),
 	scale = getScale(),
-	deflateWidth = deflate(width),
-	deflateHeight = deflate(height),
-	center = (deflateWidth/2),
+	deflatedWidth = deflate(width),
+	deflatedHeight = deflate(height),
+	center = (deflatedWidth/2),
 	score = 0,
 	best = 0,
-	storage = new ROCK.LocalStorage("frappybird"),
+	storage = new ROCK.LocalStorage('frappybird'),
 	STATES = {
 		SPLASH: 1,
 		GET_READY: 2,
@@ -375,7 +375,7 @@
 
 					};
 
-					if(new Circle("red", 6, deflate(touchX), deflate(touchY)).hitTest(sprite)) {
+					if(new Circle('red', 6, deflate(touchX), deflate(touchY)).hitTest(sprite)) {
 
 						handler.call(sprite, e, touchX, touchY);
 
@@ -555,14 +555,14 @@
 
 			// console.log('new Renderer()', this, arguments);
 
-			this.node = document.createElement("canvas");
+			this.node = document.createElement('canvas');
 			this.context = this.node.getContext(this.type);
 
 			this.node.width = this.width*2;
 			this.node.height = this.height*2;
 
-			this.node.style.width = (this.width + "px");
-			this.node.style.height = (this.height + "px");
+			this.node.style.width = (this.width + 'px');
+			this.node.style.height = (this.height + 'px');
 
 		},
 		render: function() {
@@ -633,7 +633,7 @@
 			return this;
 
 		},
-		type: "2d",
+		type: '2d',
 		width: 500,
 		height: 500,
 		scene: null,
@@ -658,8 +658,8 @@
 			frame1 = [258, 70],
 			frame2 = [258, 83];
 
-			this.bird = new Sprite("bird", texture, [frame0, frame0, frame0, frame1, frame1, frame1, frame2, frame2, frame2, frame1, frame1, frame1], 17, 12, 10, 100);
-			this.hit = new Circle("red", 6, 0, 0);
+			this.bird = new Sprite('bird', texture, [frame0, frame0, frame0, frame1, frame1, frame1, frame2, frame2, frame2, frame1, frame1, frame1], 17, 12, 10, 100);
+			this.hit = new Circle('red', 6, 0, 0);
 
 			this.hit.opacity = 0;
 
@@ -832,8 +832,8 @@
 
 			for(var i=0;i<this.COUNT;i++) {
 
-				pipeTop = new Sprite("pipeTop", texture, [[293, 0]], 26, 182, 0, 0);
-				pipeBottom = new Sprite("pipeBottom", texture, [[319, 0]], 26, 182, 0, 0);
+				pipeTop = new Sprite('pipeTop', texture, [[293, 0]], 26, 182, 0, 0);
+				pipeBottom = new Sprite('pipeBottom', texture, [[319, 0]], 26, 182, 0, 0);
 
 				this.pipes.push([pipeTop, pipeBottom]);
 
@@ -886,7 +886,7 @@
 		reset: function() {
 
 			var
-			pipex = deflateWidth,
+			pipex = deflatedWidth,
 			pipey = getRandom(),
 			pipe,
 			pipeTop,
@@ -945,7 +945,7 @@
 
 			for(var i=0;i<this.COUNT;i++) {
 
-				floor = new Sprite("floor", texture, [[139, 0]], 154, 56, floorx, 200);
+				floor = new Sprite('floor', texture, [[139, 0]], 154, 56, floorx, 200);
 
 				this.floors.push(floor);
 
@@ -996,7 +996,7 @@
 
 			for(var i=0;i<this.COUNT;i++) {
 
-				background = new Sprite("background", texture, [[0, 0]], 138, 256, backgroundx, 0);
+				background = new Sprite('background', texture, [[0, 0]], 138, 256, backgroundx, 0);
 
 				this.backgrounds.push(background);
 
@@ -1016,45 +1016,45 @@
 		},
 		COUNT: 3
 	}),
-	texture = new Texture("spritesheet.png?v=" + version),
+	texture = new Texture('spritesheet.png?v=' + version),
 	renderer = new Renderer(width, height, scale),
 	game = new Scene(),
-	medal = new Sprite("medal", texture, [[189, 120], [212, 120], [189, 143], [212, 143]], 22, 22, 70, 10),
+	medal = new Sprite('medal', texture, [[189, 120], [212, 120], [189, 143], [212, 143]], 22, 22, 70, 10),
 	scoreHundreds = createNumberSprite(),
 	scoreTens = createNumberSprite(),
 	scoreUnits = createNumberSprite(),
 	bestHundreds = createNumberSprite(),
 	bestTens = createNumberSprite(),
 	bestUnits = createNumberSprite(),
-	title = new Sprite("title", texture, [[139, 173]], 96, 22, 30, 20),
-	gameOver = new Sprite("gameOver", texture, [[139, 199]], 94, 19, 30, 40),
-	getReady = new Sprite("getReady", texture, [[139, 221]], 87, 22, 30, 50),
-	playPauseButton = new Sprite("playPauseButton", texture, [[280, 57], [280, 72]], 13, 14, 10, 15),
-	startButton = new Sprite("startButton", texture, [[246, 199]], 40, 14, 30, 170),
-	scoreButton = new Sprite("scoreButton", texture, [[246, 169]], 40, 14, 90, 170),
-	newBest = new Sprite("newBest", texture, [[139, 245]], 16, 7, 90, 170),
-	okButton = new Sprite("okButton", texture, [[246, 139]], 40, 14, 30, 170),
-	shareButton = new Sprite("shareButton", texture, [[246, 184]], 40, 14, 90, 170),
-	scoreBoard = new Sprite("scoreBoard", texture, [[139, 57]], 113, 58, 24, 70),
-	tap = new Sprite("tap", texture, [[139, 120]], 40, 50, 65, 110),
-	hit = new Fill("hit", "red", deflateWidth, deflateHeight-50, 0, 50),
-	floorFill = new Fill("floorFill", "#DBDA96", deflateWidth, deflateHeight, 0, 250),
-	floorHit = new Fill("floorHit", "red", deflateWidth, 50, 0, 200),
+	title = new Sprite('title', texture, [[139, 173]], 96, 22, 30, 20),
+	gameOver = new Sprite('gameOver', texture, [[139, 199]], 94, 19, 30, 40),
+	getReady = new Sprite('getReady', texture, [[139, 221]], 87, 22, 30, 50),
+	playPauseButton = new Sprite('playPauseButton', texture, [[280, 57], [280, 72]], 13, 14, 10, 15),
+	startButton = new Sprite('startButton', texture, [[246, 199]], 40, 14, 30, 170),
+	scoreButton = new Sprite('scoreButton', texture, [[246, 169]], 40, 14, 90, 170),
+	newBest = new Sprite('newBest', texture, [[139, 245]], 16, 7, 90, 170),
+	okButton = new Sprite('okButton', texture, [[246, 139]], 40, 14, 30, 170),
+	shareButton = new Sprite('shareButton', texture, [[246, 184]], 40, 14, 90, 170),
+	scoreBoard = new Sprite('scoreBoard', texture, [[139, 57]], 113, 58, 24, 70),
+	tap = new Sprite('tap', texture, [[139, 120]], 40, 50, 65, 110),
+	hit = new Fill('hit', 'red', deflatedWidth, deflatedHeight-50, 0, 50),
+	floorFill = new Fill('floorFill', '#DBDA96', deflatedWidth, deflatedHeight, 0, 250),
+	floorHit = new Fill('floorHit', 'red', deflatedWidth, 50, 0, 200),
 	backgrounds = new Backgrounds(),
 	bird = new Bird(),
 	pipes = new Pipes(),
 	floors = new Floors(),
 	sounds = {
-		point: createAudio("point"),
-		swoosh: createAudio("swoosh"),
-		wing: createAudio("wing"),
-		die: createAudio("die"),
-		hit: createAudio("hit")
+		point: createAudio('point'),
+		swoosh: createAudio('swoosh'),
+		wing: createAudio('wing'),
+		die: createAudio('die'),
+		hit: createAudio('hit')
 	},
 	playSounds = true,
 	hitTouchStartHandler = function() {
 
-		// console.log("hit:down");
+		// console.log('hit:down');
 
 		if(state!==STATES.PLAY) {
 			updateState(STATES.PLAY);
@@ -1068,7 +1068,7 @@
 	},
 	hitTouchEndHandler = function() {
 
-		// console.log("hit:up");
+		// console.log('hit:up');
 
 		this.bind(touchStartEvent, hitTouchStartHandler);
 		this.unbind(touchEndEvent, hitTouchEndHandler);
@@ -1076,7 +1076,7 @@
 	},
 	okButtonTouchStartHandler = function() {
 
-		// console.log("okButton:down");
+		// console.log('okButton:down');
 
 		okButton.y += 1;
 
@@ -1086,7 +1086,7 @@
 	},
 	okButtonTouchEndHandler = function() {
 
-		// console.log("okButton:up");
+		// console.log('okButton:up');
 
 		this.y -= 1;
 
@@ -1098,7 +1098,7 @@
 	},
 	shareButtonTouchStartHandler = function() {
 
-		// console.log("shareButton:down");
+		// console.log('shareButton:down');
 
 		this.y += 1;
 
@@ -1108,16 +1108,16 @@
 	},
 	shareButtonTouchEndHandler = function() {
 
-		// console.log("shareButton:up");
+		// console.log('shareButton:up');
 
 		this.y -= 1;
 
 		var
 		url = shareURL,
-		message = "I scored " + score + " on Frappy Bird! frappybird.com";
+		message = 'I scored ' + score + ' on Frappy Bird! frappybird.com';
 
 		if(state===STATES.SCORE) {
-			message = "My best score on Frappy Bird is " + best + "! frappybird.com";
+			message = 'My best score on Frappy Bird is ' + best + '! frappybird.com';
 		};
 
 		url += encodeURIComponent(message);
@@ -1130,7 +1130,7 @@
 	},
 	startButtonTouchStartHandler = function() {
 
-		// console.log("startButton:down");
+		// console.log('startButton:down');
 
 		this.y += 1;
 
@@ -1140,7 +1140,7 @@
 	},
 	startButtonTouchEndHandler = function() {
 
-		// console.log("startButton:up");
+		// console.log('startButton:up');
 
 		this.y -= 1;
 
@@ -1152,7 +1152,7 @@
 	},
 	scoreButtonTouchStartHandler = function() {
 
-		// console.log("scoreButton:down");
+		// console.log('scoreButton:down');
 
 		this.y += 1;
 
@@ -1162,7 +1162,7 @@
 	},
 	scoreButtonTouchEndHandler = function() {
 
-		// console.log("scoreButton:up");
+		// console.log('scoreButton:up');
 
 		this.y -= 1;
 
@@ -1174,7 +1174,7 @@
 	},
 	playPauseButtonTouchStartHandler = function() {
 
-		// console.log("playPauseButton:down");
+		// console.log('playPauseButton:down');
 
 		this.y += 1;
 
@@ -1184,7 +1184,7 @@
 	},
 	playPauseButtonTouchEndHandler = function() {
 
-		// console.log("playPauseButton:up");
+		// console.log('playPauseButton:up');
 
 		this.y -= 1;
 
@@ -1204,8 +1204,8 @@
 
 	if(!isTouch) {
 
-		touchStartEvent = "mousedown";
-		touchEndEvent = "mouseup";
+		touchStartEvent = 'mousedown';
+		touchEndEvent = 'mouseup';
 
 	};
 
@@ -1214,23 +1214,23 @@
 	floorHit.opacity = 0;
 
 	getReady.x = center;
-	getReady.x -= getReady.width/2;
+	getReady.x -= (getReady.width/2);
 
 	gameOver.x = center;
-	gameOver.x -= gameOver.width/2;
+	gameOver.x -= (gameOver.width/2);
 
 	tap.x = center;
-	tap.x -= tap.width/2;
+	tap.x -= (tap.width/2);
 	tap.x += 10;
 
 	scoreBoard.x = center;
-	scoreBoard.x -= scoreBoard.width/2;
+	scoreBoard.x -= (scoreBoard.width/2);
 
 	medal.x = (scoreBoard.x + 13);
 	medal.y = (scoreBoard.y + 21);
 
 	title.x = center;
-	title.x -= title.width/2;
+	title.x -= (title.width/2);
 	title.x -= 10;
 	title.y = 70;
 
@@ -1331,7 +1331,7 @@
 
 	playPauseButton.bind(touchStartEvent, playPauseButtonTouchStartHandler);
 
-	best = (storage.get("best")||0);
+	best = (storage.get('best')||0);
 	// best = 47;
 
 	renderer.appendTo(document.body);
