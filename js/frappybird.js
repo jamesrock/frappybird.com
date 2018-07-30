@@ -1051,7 +1051,7 @@
 		wing: createAudio('wing'),
 		die: createAudio('die'),
 		hit: createAudio('hit'),
-		sprite: createAudio('hit')
+		sprite: createAudio('soundsprite')
 	},
 	soundSprite = SoundSprite(sounds.sprite, {
 		point: [1, 2],
