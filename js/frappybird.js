@@ -287,7 +287,8 @@
 			return;
 		};
 
-		sounds[sound].play();
+		// sounds[sound].play();
+		soundSprite.play(sound);
 
 	},
 	getScale = function() {
@@ -1049,8 +1050,16 @@
 		swoosh: createAudio('swoosh'),
 		wing: createAudio('wing'),
 		die: createAudio('die'),
-		hit: createAudio('hit')
+		hit: createAudio('hit'),
+		sprite: createAudio('hit')
 	},
+	soundSprite = SoundSprite(sounds.sprite, {
+		point: [1, 2],
+		swoosh: [2, 3],
+		wing: [3, 4],
+		die: [4, 5],
+		hit: [5, 6]
+	}),
 	playSounds = true,
 	hitTouchStartHandler = function() {
 
