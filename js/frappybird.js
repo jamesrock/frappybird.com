@@ -1046,14 +1046,14 @@
 	pipes = new Pipes(),
 	floors = new Floors(),
 	sounds = {
-		point: createAudio('point'),
-		swoosh: createAudio('swoosh'),
-		wing: createAudio('wing'),
-		die: createAudio('die'),
-		hit: createAudio('hit'),
+		// point: createAudio('point'),
+		// swoosh: createAudio('swoosh'),
+		// wing: createAudio('wing'),
+		// die: createAudio('die'),
+		// hit: createAudio('hit'),
 		sprite: createAudio('soundsprite')
 	},
-	soundSprite = SoundSprite(sounds.sprite, {
+	soundSprite = new SoundSprite(sounds.sprite, {
 		die: [1, 2],
 		hit: [2, 3],
 		point: [3, 4],
