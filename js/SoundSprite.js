@@ -24,15 +24,15 @@
 		this.audio.addEventListener('timeupdate', this.playHandler);
 
 	};
-
 	SoundSprite.prototype.stop = function() {
 
 		console.log(`SoundSprite.stop()`);
 		// console.log(this.audio.currentTime);
 
 		this.sound = [0, 0];
+		this.audio.currentTime = 0;
 		this.audio.pause();
-		// this.audio.removeEventListener('timeupdate', this.playHandler);
+		this.audio.removeEventListener('timeupdate', this.playHandler);
 
 	};
 	SoundSprite.prototype.bind = function(handler) {
@@ -47,8 +47,9 @@
 	SoundSprite.prototype._playHandler = function() {
 
 		console.log('this.audio.currentTime', this.audio.currentTime);
+		console.log(this.sound[1]);
 
-		if(this.sound[1]>=this.audio.currentTime) {
+		if(this.audio.currentTime>=this.sound[1]) {
 			// console.log('stop');
 			this.stop();
 		};
