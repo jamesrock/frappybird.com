@@ -1054,11 +1054,11 @@
 		sprite: createAudio('soundsprite')
 	},
 	soundSprite = SoundSprite(sounds.sprite, {
-		point: [1, 2],
-		swoosh: [2, 3],
-		wing: [3, 4],
-		die: [4, 5],
-		hit: [5, 6]
+		die: [1, 2],
+		hit: [2, 3],
+		point: [3, 4],
+		swoosh: [4, 5],
+		wing: [5, 6]
 	}),
 	playSounds = true,
 	hitTouchStartHandler = function() {

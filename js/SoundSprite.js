@@ -7,7 +7,9 @@
 		this.sounds = sounds;
 
 	};
-	SoundSprite.prototype.play = function() {
+	SoundSprite.prototype.play = function(sound) {
+
+		console.log(`SoundSprite.play(${sound})`);
 
 	};
 
