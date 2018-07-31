@@ -1,6 +1,10 @@
 (function() {
 
 	var
+	log = false,
+	logger = function(value) {
+		log&&console.log(value);
+	},
 	SoundSprite = window.SoundSprite = function(audio, sounds) {
 
 		this.audio = audio;
@@ -11,8 +15,8 @@
 	SoundSprite.prototype.sound = [0, 0];
 	SoundSprite.prototype.play = function(sound) {
 
-		console.log(`SoundSprite.play(${sound})`);
-		// console.log(this.audio.currentTime);
+		logger(`SoundSprite.play(${sound})`);
+		// logger(this.audio.currentTime);
 
 		// this.stop();
 
@@ -26,8 +30,8 @@
 	};
 	SoundSprite.prototype.stop = function() {
 
-		// console.log(`SoundSprite.stop()`);
-		// console.log(this.audio.currentTime);
+		// logger(`SoundSprite.stop()`);
+		// logger(this.audio.currentTime);
 
 		this.sound = [0, 0];
 		this.audio.currentTime = 0;
@@ -46,10 +50,10 @@
 	};
 	SoundSprite.prototype._playHandler = function() {
 
-		// console.log('this.audio.currentTime', this.audio.currentTime);
+		// logger('this.audio.currentTime', this.audio.currentTime);
 
 		if(this.audio.currentTime>=this.sound[1]) {
-			// console.log('stop');
+			// logger('stop');
 			this.stop();
 		};
 
