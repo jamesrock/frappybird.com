@@ -1048,12 +1048,12 @@
 	sounds = {
 		sprite: createAudio('soundsprite')
 	},
-	soundSprite = new SoundSprite(sounds.sprite, {
-		die: [1, 2],
+	soundSprite = window.soundSprite = new SoundSprite(sounds.sprite, {
+		die: [0, 1],
 		hit: [2, 3],
-		point: [3, 4],
-		swoosh: [4, 5],
-		wing: [5, 6]
+		point: [4, 5],
+		swoosh: [6, 7],
+		wing: [8, 9]
 	}),
 	playSounds = true,
 	hitTouchStartHandler = function() {

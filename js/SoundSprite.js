@@ -14,7 +14,7 @@
 		console.log(`SoundSprite.play(${sound})`);
 		// console.log(this.audio.currentTime);
 
-		this.stop();
+		// this.stop();
 
 		this.sound = this.sounds[sound];
 
@@ -26,7 +26,7 @@
 	};
 	SoundSprite.prototype.stop = function() {
 
-		console.log(`SoundSprite.stop()`);
+		// console.log(`SoundSprite.stop()`);
 		// console.log(this.audio.currentTime);
 
 		this.sound = [0, 0];
@@ -46,8 +46,7 @@
 	};
 	SoundSprite.prototype._playHandler = function() {
 
-		console.log('this.audio.currentTime', this.audio.currentTime);
-		console.log(this.sound[1]);
+		// console.log('this.audio.currentTime', this.audio.currentTime);
 
 		if(this.audio.currentTime>=this.sound[1]) {
 			// console.log('stop');
