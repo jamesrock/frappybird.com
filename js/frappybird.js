@@ -314,7 +314,7 @@
 	width = innerWidth,
 	height = innerHeight,
 	maxWidth = ROCK.MATH.truncate(height/ratio),
-	width = (width>maxWidth?maxWidth:width),
+	width = (width>maxWidth&&!isTouch?maxWidth:width),
 	scale = getScale(),
 	deflatedWidth = deflate(width),
 	deflatedHeight = deflate(height),
