@@ -1,62 +1,61 @@
-(function() {
 
-	var
-	log = false,
-	logger = function(value) {
-		log&&console.log(value);
-	},
-	SoundSprite = window.SoundSprite = function(audio, sounds) {
+var
+log = false,
+logger = function(value) {
+	log&&console.log(value);
+},
+SoundSprite = function(audio, sounds) {
 
-		this.audio = audio;
-		this.sounds = sounds;
-		this.playHandler = this.bind(this._playHandler);
+	this.audio = audio;
+	this.sounds = sounds;
+	this.playHandler = this.bind(this._playHandler);
 
-	};
-	SoundSprite.prototype.sound = [0, 0];
-	SoundSprite.prototype.play = function(sound) {
+};
+SoundSprite.prototype.sound = [0, 0];
+SoundSprite.prototype.play = function(sound) {
 
-		logger(`SoundSprite.play(${sound})`);
-		// logger(this.audio.currentTime);
+	logger(`SoundSprite.play(${sound})`);
+	// logger(this.audio.currentTime);
 
-		// this.stop();
+	// this.stop();
 
-		this.sound = this.sounds[sound];
+	this.sound = this.sounds[sound];
 
-		this.audio.currentTime = this.sound[0];
-		this.audio.play();
+	this.audio.currentTime = this.sound[0];
+	this.audio.play();
 
-		this.audio.addEventListener('timeupdate', this.playHandler);
+	this.audio.addEventListener('timeupdate', this.playHandler);
 
-	};
-	SoundSprite.prototype.stop = function() {
+};
+SoundSprite.prototype.stop = function() {
 
-		// logger(`SoundSprite.stop()`);
-		// logger(this.audio.currentTime);
+	// logger(`SoundSprite.stop()`);
+	// logger(this.audio.currentTime);
 
-		this.sound = [0, 0];
-		this.audio.currentTime = 0;
-		this.audio.pause();
-		this.audio.removeEventListener('timeupdate', this.playHandler);
+	this.sound = [0, 0];
+	this.audio.currentTime = 0;
+	this.audio.pause();
+	this.audio.removeEventListener('timeupdate', this.playHandler);
 
-	};
-	SoundSprite.prototype.bind = function(handler) {
+};
+SoundSprite.prototype.bind = function(handler) {
 
-		var context = this;
+	var context = this;
 
-		return function(event) {
-			return handler.call(context, event);
-		};
-
-	};
-	SoundSprite.prototype._playHandler = function() {
-
-		// logger('this.audio.currentTime', this.audio.currentTime);
-
-		if(this.audio.currentTime>=this.sound[1]) {
-			// logger('stop');
-			this.stop();
-		};
-
+	return function(event) {
+		return handler.call(context, event);
 	};
 
-})();
+};
+SoundSprite.prototype._playHandler = function() {
+
+	// logger('this.audio.currentTime', this.audio.currentTime);
+
+	if(this.audio.currentTime>=this.sound[1]) {
+		// logger('stop');
+		this.stop();
+	};
+
+};
+
+export default SoundSprite;
