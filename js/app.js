@@ -495,7 +495,7 @@ Fill = DisplayObject.extend({
 	}
 }),
 Circle = DisplayObject.extend({
-	constructor: function Sprite(fill, radius, x, y) {
+	constructor: function Circle(fill, radius, x, y) {
 
 		this.fill = fill;
 		this.x = x;
