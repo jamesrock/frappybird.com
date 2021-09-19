@@ -1066,8 +1066,8 @@ hitTouchStartHandler = function() {
 
 	bird.flap();
 
-	// this.unbind(touchStartEvent, hitTouchStartHandler);
-	// this.bind(touchEndEvent, hitTouchEndHandler);
+	this.unbind(touchStartEvent, hitTouchStartHandler);
+	this.bind(touchEndEvent, hitTouchEndHandler);
 
 },
 hitTouchEndHandler = function() {
