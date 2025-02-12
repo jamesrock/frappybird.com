@@ -1,5 +1,5 @@
 import { ROCK } from './ROCK.js';
-import { SoundSprite } from './SoundSprite.js';
+import { SoundHandler } from './SoundHandler.js';
 
 class DisplayObject {
 	x = 0;
@@ -323,8 +323,7 @@ class Bird {
 
 		this.velocity = this.FLAP_IMPULSE;
 
-		// playSound('wing');
-		soundSprite.play('wing');
+		sound.play('wing');
 
 		return this;
 
@@ -332,17 +331,13 @@ class Bird {
 	updateVelocity() {
 
 		if(this.floored) {
-
 			return;
-
 		};
 
 		this.velocity += this.GRAVITY;
 
 		if(this.velocity > this.MAX_VELOCITY) {
-
 			this.velocity = this.MAX_VELOCITY;
-
 		};
 
 		this.bird.y += this.velocity;
@@ -395,15 +390,10 @@ class Bird {
 		pipeTop = pipe[0],
 		pipeBottom = pipe[1];
 
-		if(this.hit.y<0&&(this.hit.x+this.hit.radius/2)>=pipeTop.x) {
-
-			this.dead = true;
-
-		}
-
 		if(!this.dead&&(this.hit.hitTest(pipeTop)||this.hit.hitTest(pipeBottom))) {
 
 			this.dead = true;
+			sound.play('hit');
 
 		};
 
@@ -412,20 +402,13 @@ class Bird {
 			this.dead = true;
 			this.floored = true;
 			this.bird.y = (floorHit.y + this.bird.yOffset);
+			sound.play('hit');
 
 		};
 
-		if(this.dead) {
+		if(this.dead&&state!==STATES.GAME_OVER) {
 
-			// playSound('hit');
-			soundSprite.play('hit');
-
-			if(state!==STATES.GAME_OVER) {
-
-				updateState(STATES.GAME_OVER);
-
-			};
-
+			updateState(STATES.GAME_OVER);
 			return;
 
 		};
@@ -433,8 +416,7 @@ class Bird {
 		if(this.bird.x===(pipeTop.x+pipeTop.width)) {
 
 			score ++;
-			// playSound('point');
-			soundSprite.play('point');
+			sound.play('point');
 			updateScore();
 
 		};
@@ -823,6 +805,8 @@ updateBest = function() {
 },
 updateState = function(gameState) {
 
+	// console.log(`updateState(${gameState})`);
+
 	state = gameState;
 
 	switch(state) {
@@ -1050,12 +1034,12 @@ backgrounds = new Backgrounds(),
 bird = new Bird(),
 pipes = new Pipes(),
 floors = new Floors(),
-soundSprite = new SoundSprite('soundsprite', {
-	die: [0, 1],
-	hit: [2, 3],
-	point: [4, 5],
-	swoosh: [6, 7],
-	wing: [8, 9]
+sound = new SoundHandler({
+	die: '/audio/die.mp3',
+	hit: '/audio/hit.mp3',
+	point: '/audio/point.mp3',
+	swoosh: '/audio/swoosh.mp3',
+	wing: '/audio/wing.mp3'
 }),
 hitTouchStartHandler = function() {
 
