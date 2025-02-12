@@ -987,12 +987,10 @@ createNumberSprite = function() {
 getScale = function() {
 
 	var
-	val = 4;
+	val = 5;
 
 	if(height>=1000) {
-
-		val = val*2;
-
+		val = 8;
 	};
 
 	return val;
