@@ -1321,7 +1321,6 @@ scoreButton.bind(touchStartEvent, scoreButtonTouchStartHandler);
 playPauseButton.bind(touchStartEvent, playPauseButtonTouchStartHandler);
 
 best = (storage.get('best')||0);
-// best = 47;
 
 renderer.appendTo(document.body);
 
